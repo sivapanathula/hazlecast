@@ -2,20 +2,17 @@ package com.cache.hazlecast;
 
 import com.cache.hazlecast.model.UserAccount;
 import com.hazelcast.config.Config;
-import com.hazelcast.config.ManagementCenterConfig;
+import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-
+import com.hazelcast.map.IMap;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Map;
-
 @SpringBootApplication
-@EnableAutoConfiguration
+@EnableCaching
 public class HazlecastApplication {
 
 	public static void main(String[] args) {
@@ -25,10 +22,19 @@ public class HazlecastApplication {
 	@Bean
 	public Config hazelCastConfig() {
 
-		return new Config().setManagementCenterConfig(
+		return new Config()
+				.setInstanceName("hazelcastInstance")
+				.addMapConfig(
+						new MapConfig()
+								.setName("users")
+								//.setMaxSizeConfig(new MaxSizeConfig(200, MaxSizeConfig.MaxSizePolicy.FREE_HEAP_SIZE))
+							//	.setEvictionPolicy(EvictionPolicy.LRU)
+								.setTimeToLiveSeconds(200));
+
+				/*.setManagementCenterConfig(
 
 		new ManagementCenterConfig().setEnabled(true).setUrl("http://localhost:8080/hazelcast-mancenter"));
-
+*/
 	}
 
 	@Bean
